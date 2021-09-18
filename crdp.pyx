@@ -6,11 +6,11 @@ cdef extern from "math.h":
 
 cdef _c_rdp(double *x, double *y, int n, char* mask, double epsilon):
     stk = [(0, n - 1)]
-    cdef int st, ed, index
-    cdef double dmax, p0, p1, p2,dis 
+    cdef int i, st, ed, index
+    cdef double d, dmax, p0, p1, p2, dis
     while stk:
         st, ed = stk.pop()
-        dis = sqrt((y[st]-y[ed]) * (y[st]-y[ed]) + (x[st]-x[ed]) * (x[st]-x[ed]))
+        dis = sqrt((y[st]-y[ed])**2 + (x[st]-x[ed])**2)
         p0 = y[st] - y[ed]
         p1 = x[st] - x[ed]
         p2 = x[st] * y[ed] - y[st] * x[ed]
@@ -36,9 +36,8 @@ def rdp(points, double epsilon=0, return_mask=False):
     cdef char *mask = <char*> malloc(n)
     memset(mask, 1, n)
     for i from 0<=i<n:
-        p = points[i]
-        x[i] = p[0]
-        y[i] = p[1]
+        x[i] = points[i][0]
+        y[i] = points[i][1]
     _c_rdp(x, y, n, mask, epsilon)
     res = []
     res_mask = []
@@ -50,6 +49,7 @@ def rdp(points, double epsilon=0, return_mask=False):
             res_mask.append(False)
     free(x)
     free(y)
+    free(mask)
     if return_mask:
       return res_mask
     else:
