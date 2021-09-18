@@ -28,8 +28,8 @@ cdef _c_rdp(double *x, double *y, int n, char* mask, double epsilon):
             for i from st < i < ed:
                 mask[i] = 0
 
-def rdp(points, double epsilon=0):
-    cdef int n
+def rdp(points, double epsilon=0, return_mask=False):
+    cdef int n, i
     n = len(points)
     cdef double *x = <double*> malloc(n * sizeof(double))
     cdef double *y = <double*> malloc(n * sizeof(double))
@@ -41,9 +41,16 @@ def rdp(points, double epsilon=0):
         y[i] = p[1]
     _c_rdp(x, y, n, mask, epsilon)
     res = []
+    res_mask = []
     for i from 0<=i<n:
         if mask[i]:
             res.append(points[i])
+            res_mask.append(True)
+        else:
+            res_mask.append(False)
     free(x)
     free(y)
-    return res
+    if return_mask:
+      return res_mask
+    else:
+      return res
