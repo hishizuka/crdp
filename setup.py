@@ -2,7 +2,7 @@ from setuptools import setup, Extension, find_packages
 from Cython.Build import cythonize
 
 extensions = [
-    Extension('crdp', ['crdp.pyx']),
+    Extension('crdp', ['crdp.pyx'], extra_compile_args=["-O3"]),
 ]
 
 try:
