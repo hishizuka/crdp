@@ -17,7 +17,10 @@ cdef _c_rdp(double *x, double *y, int n, char* mask, double epsilon):
         dmax = 0.0
         index = st
         for i from st < i < ed:
-            d = abs(p0 * x[i] - p1 * y[i] + p2) / dis
+            if dis:
+                d = abs(p0 * x[i] - p1 * y[i] + p2) / dis
+            else:
+                d = sqrt((y[st]-y[i]) * (y[st]-y[i]) + (x[st]-x[i]) * (x[st]-x[i]))
             if d > dmax:
                 index = i
                 dmax = d
